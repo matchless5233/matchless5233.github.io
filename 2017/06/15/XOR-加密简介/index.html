@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>XOR 加密简介 | Matchless</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">XOR 加密简介</h1><a id="logo" href="/.">Matchless</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">XOR 加密简介</h1><div class="post-meta">Jun 15, 2017</div><div class="post-content"><p>本文介绍一种简单高效、非常安全的加密方法：XOR 加密。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017053107.jpg" alt=""></p>
+<h2 id="一、-XOR-运算"><a href="#一、-XOR-运算" class="headerlink" title="一、 XOR 运算"></a>一、 XOR 运算</h2><p>逻辑运算之中，除了 <a href="https://en.wikipedia.org/wiki/Logical_conjunction" target="_blank" rel="external"><code>AND</code></a> 和 <a href="https://en.wikipedia.org/wiki/Logical_disjunction" target="_blank" rel="external"><code>OR</code></a>，还有一种 <a href="https://zh.wikipedia.org/wiki/%E9%80%BB%E8%BE%91%E5%BC%82%E6%88%96" target="_blank" rel="external"><code>XOR</code></a> 运算，中文称为”异或运算”。</p>
+<p>它的定义是：两个值相同时，返回<code>false</code>，否则返回<code>true</code>。也就是说，<code>XOR</code>可以用来判断两个值是否不同。</p>
+<blockquote>
+<p>true XOR true // false<br>    false XOR false // false<br>    true XOR false // true<br>    true XOR false // true<br>    `</p>
+</blockquote>
+<pre><code>![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017053102.jpg)
+
+JavaScript 语言的二进制运算，有一个专门的 XOR 运算符，写作`^`。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>1 ^ 1 // 0
+0 ^ 0 // 0
+1 ^ 0 // 1
+0 ^ 1 // 1
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>上面代码中，如果两个二进制位相同，就返回`0`，表示`false`；否则返回`1`，表示`true`。
+
+## 二、 XOR 的应用
+
+XOR 运算有一个很奇妙的特点：如果对一个值连续做两次 XOR，会返回这个值本身。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>// 第一次 XOR
+1010 ^ 1111 // 0101
+
+// 第二次 XOR
+0101 ^ 1111 // 1010
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>上面代码中，原始值是`1010`，再任意选择一个值（上例是`1111`），做两次 XOR，最后总是会得到原始值`1010`。这在数学上是很容易证明的。
+
+## 三、加密应用
+
+XOR 的这个特点，使得它可以用于信息的加密。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>message XOR key // cipherText
+cipherText XOR key // message
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>上面代码中，原始信息是`message`，密钥是`key`，第一次 XOR 会得到加密文本`cipherText`。对方拿到以后，再用`key`做一次 XOR 运算，就会还原得到`message`。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017053106.gif)
+
+## 四、完美保密性
+
+二战期间，各国为了电报加密，对密码学进行了大量的研究和实践，其中就包括 XOR 加密。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017053103.jpg)
+
+战后，美国数学家香农（Claude Shannon）将他的[研究成果](https://en.wikipedia.org/wiki/One-time_pad#Perfect_secrecy)公开发表，证明了只要满足两个条件，XOR 加密是无法破解的。
+
+&gt; *   `key`的长度大于等于`message`
+</code></pre><blockquote>
+<ul>
+<li><code>key</code>必须是一次性的，且每次都要随机产生</li>
+</ul>
+</blockquote>
+<pre><code>理由很简单，如果每次的`key`都是随机的，那么产生的`CipherText`具有所有可能的值，而且是均匀分布，无法从`CipherText`看出`message`的任何特征。也就是说，它具有最大的&quot;信息熵&quot;，因此完全不可能破解。这被称为 XOR 的[&quot;完美保密性&quot;](https://zh.wikipedia.org/wiki/%E5%AE%8C%E5%96%84%E4%BF%9D%E5%AF%86%E6%80%A7)（perfect secrecy）。
+
+满足上面两个条件的`key`，叫做 [one-time pad](https://en.wikipedia.org/wiki/One-time_pad)（缩写为OTP），意思是&quot;一次性密码本&quot;，因为以前这样的`key`都是印刷成密码本，每次使用的时候，必须从其中挑选`key`。
+
+## 五、实例：哈希加密
+
+下面的例子使用 XOR，对用户的登陆密码进行加密。实际运行效果看[这里](https://www.webpackbin.com/bins/-KlJDPHf6IgYNNm9IcK6)。
+
+[![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017053105.png)](https://www.webpackbin.com/bins/-KlJDPHf6IgYNNm9IcK6)
+
+第一步，用户设置登陆密码的时候，算出这个密码的哈希，这里使用的是 MD5 算法，也可以采用其他哈希算法。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>const message = md5(password);
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>第二步，生成一个随机的 key。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>// 生成一个随机整数，范围是 [min, max]
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// 生成一个随机的十六进制的值，在 0 ～ f 之间 
+function getHex() {
+  let n = 0;
+  for (let i = 4; i &gt; 0; i--) {
+    n = (getRandomInt(0, 1) &lt;&lt; (i - 1)) + n;
+  }
+  return n.toString(16);
+}
+
+// 生成一个32位的十六进制值，用作一次性 Key
+function getOTP() {
+  const arr = [];
+  for (let i = 0; i &lt; 32; i++) {
+    arr.push(getHex());
+  }
+  return arr.join(&apos;&apos;);
+}
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>上面代码中，生成的`key`是32位的十六进制值，对应 MD5 产生的128位的二进制哈希。
+
+第三步，进行 XOR 运算，求出加密后的`message`。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>function getXOR(message, key) {
+  const arr = [];
+  for (let i = 0; i &lt; 32; i++) {
+    const  m = parseInt(message.substr(i, 1), 16);
+    const k = parseInt(key.substr(i, 1), 16);
+    arr.push((m ^ k).toString(16));
+  }
+  return arr.join(&apos;&apos;);
+}
+</code></pre></blockquote>
+<p>使用这种方法保存用户的登陆密码，即使加密文本泄露，只要一次性的密钥（<code>key</code>）没有泄露，对方也无法破解。</p>
+<p>（完）</p>
+<pre><code>&lt;div style=&quot;color:#556677;line-height:160%;padding:0.3em 0.5em;border:1px solid #d3d3d3;margin:1em;background-color:#AAD2F0;-moz-border-radius: 10px;-webkit-border-radius:10px;border-radius: 10px;&quot;&gt;
+</code></pre><h3 id="文档信息"><a href="#文档信息" class="headerlink" title="文档信息"></a>文档信息</h3><ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank" rel="external">创意共享3.0许可证</a>）</li>
+<li>发表日期： <abbr class="published" title="2017-05-31T14:29:17+08:00">2017年5月31日</abbr></li>
+<li>更多内容： <a href="http://www.ruanyifeng.com/blog/archives.html" target="_blank" rel="external"> 档案</a>  »<a href="http://www.ruanyifeng.com/blog/computer/" target="_blank" rel="external"> 理解计算机</a></li>
+<li>博客文集：<a href="http://road.ruanyifeng.com" target="_blank" rel="external">《前方的路》</a>，<a href="https://ruanyf.github.io/survivor" target="_blank" rel="external">《未来世界的幸存者》</a></li>
+<li>社交媒体：<a href="https://twitter.com/ruanyf" target="_blank" rel="external"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAk1JREFUeNqsVc9rE0EU/mZ3dhPNJl2bVIk/Km09aFBE8GLvnrwJXvwLxIsgCP4Fnit6E8Gb0IMHwUsL9SSNgiAoooJIpE1Joo1h82uT7IxvxmRN3Q32kAdvdrI773vfe+/bDTu9WioDcDAda3Ja8piepQ1avCkCeny0Y+R9KenKwOmHHLvPaKn7AtVOoO8dOWDCMpg+41gMQv5FNEJACgoE8MsPNLDBhgfoutMOsJDmWLmU037C4TApciljwQ/kHoohQxV06+wMXNvE7WINuaSpvdYVKLgWnl3O4zAxU3Z1IYVGT+B5qYWV9z2kbQaT/cOwTsxOUUYF+mB5Dkmi8HG3h2q9hxsFNwRTdvQgxxnXRrMvIdkEhllis/qtiWuLDm4WZnBlPoWnXz28LHdw0uGR7m9Wu3j0qYGEubfn4UlBfXO4gTZltRNMg9w9f0i7kNFxllsBlS0x75gYfxyWTBUjT2W5CSMSPBrQuG21+hiMDS8CeCzF8eSLp13uQ3Ab1IqMFZN8tFHPmgOBF99bYP8Be1Xp6t7OJszJgKpPSiZvaj7uf2hguz2IBQuozDvFH6RDBjuK9wdQDvt0nMpW+8efGyh5UcAeZb2+UcHbnz5Jx4wdlp4yJYU3kLiQtfBwOYeLc8nIwfXtNu69q2Oz4mMxbemYOOOjKarhvq51KUjg3GwiFPIuvcNF6pnSnWK0lOEabNLgQh1aJFAhlGB9rG110B2+oyRNPc0sZbRNFltmLKDKqj4Qrm1ojzOxDz2pyPQ0P7CK4c40/wJ+CzAAGYrXsvfFXR4AAAAASUVORK5CYII=" alt=""> twitter</a>，<a href="http://weibo.com/ruanyf" target="_blank" rel="external"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAKT2lDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS4iAlEtvUhUIIFJCi4AUkSYqIQkQSoghodkVUcERRUUEG8igiAOOjoCMFVEsDIoK2AfkIaKOg6OIisr74Xuja9a89+bN/rXXPues852zzwfACAyWSDNRNYAMqUIeEeCDx8TG4eQuQIEKJHAAEAizZCFz/SMBAPh+PDwrIsAHvgABeNMLCADATZvAMByH/w/qQplcAYCEAcB0kThLCIAUAEB6jkKmAEBGAYCdmCZTAKAEAGDLY2LjAFAtAGAnf+bTAICd+Jl7AQBblCEVAaCRACATZYhEAGg7AKzPVopFAFgwABRmS8Q5ANgtADBJV2ZIALC3AMDOEAuyAAgMADBRiIUpAAR7AGDIIyN4AISZABRG8lc88SuuEOcqAAB4mbI8uSQ5RYFbCC1xB1dXLh4ozkkXKxQ2YQJhmkAuwnmZGTKBNA/g88wAAKCRFRHgg/P9eM4Ors7ONo62Dl8t6r8G/yJiYuP+5c+rcEAAAOF0ftH+LC+zGoA7BoBt/qIl7gRoXgugdfeLZrIPQLUAoOnaV/Nw+H48PEWhkLnZ2eXk5NhKxEJbYcpXff5nwl/AV/1s+X48/Pf14L7iJIEyXYFHBPjgwsz0TKUcz5IJhGLc5o9H/LcL//wd0yLESWK5WCoU41EScY5EmozzMqUiiUKSKcUl0v9k4t8s+wM+3zUAsGo+AXuRLahdYwP2SycQWHTA4vcAAPK7b8HUKAgDgGiD4c93/+8//UegJQCAZkmScQAAXkQkLlTKsz/HCAAARKCBKrBBG/TBGCzABhzBBdzBC/xgNoRCJMTCQhBCCmSAHHJgKayCQiiGzbAdKmAv1EAdNMBRaIaTcA4uwlW4Dj1wD/phCJ7BKLyBCQRByAgTYSHaiAFiilgjjggXmYX4IcFIBBKLJCDJiBRRIkuRNUgxUopUIFVIHfI9cgI5h1xGupE7yAAygvyGvEcxlIGyUT3UDLVDuag3GoRGogvQZHQxmo8WoJvQcrQaPYw2oefQq2gP2o8+Q8cwwOgYBzPEbDAuxsNCsTgsCZNjy7EirAyrxhqwVqwDu4n1Y8+xdwQSgUXACTYEd0IgYR5BSFhMWE7YSKggHCQ0EdoJNwkDhFHCJyKTqEu0JroR+cQYYjIxh1hILCPWEo8TLxB7iEPENyQSiUMyJ7mQAkmxpFTSEtJG0m5SI+ksqZs0SBojk8naZGuyBzmULCAryIXkneTD5DPkG+Qh8lsKnWJAcaT4U+IoUspqShnlEOU05QZlmDJBVaOaUt2ooVQRNY9aQq2htlKvUYeoEzR1mjnNgxZJS6WtopXTGmgXaPdpr+h0uhHdlR5Ol9BX0svpR+iX6AP0dwwNhhWDx4hnKBmbGAcYZxl3GK+YTKYZ04sZx1QwNzHrmOeZD5lvVVgqtip8FZHKCpVKlSaVGyovVKmqpqreqgtV81XLVI+pXlN9rkZVM1PjqQnUlqtVqp1Q61MbU2epO6iHqmeob1Q/pH5Z/YkGWcNMw09DpFGgsV/jvMYgC2MZs3gsIWsNq4Z1gTXEJrHN2Xx2KruY/R27iz2qqaE5QzNKM1ezUvOUZj8H45hx+Jx0TgnnKKeX836K3hTvKeIpG6Y0TLkxZVxrqpaXllirSKtRq0frvTau7aedpr1Fu1n7gQ5Bx0onXCdHZ4/OBZ3nU9lT3acKpxZNPTr1ri6qa6UbobtEd79up+6Ynr5egJ5Mb6feeb3n+hx9L/1U/W36p/VHDFgGswwkBtsMzhg8xTVxbzwdL8fb8VFDXcNAQ6VhlWGX4YSRudE8o9VGjUYPjGnGXOMk423GbcajJgYmISZLTepN7ppSTbmmKaY7TDtMx83MzaLN1pk1mz0x1zLnm+eb15vft2BaeFostqi2uGVJsuRaplnutrxuhVo5WaVYVVpds0atna0l1rutu6cRp7lOk06rntZnw7Dxtsm2qbcZsOXYBtuutm22fWFnYhdnt8Wuw+6TvZN9un2N/T0HDYfZDqsdWh1+c7RyFDpWOt6azpzuP33F9JbpL2dYzxDP2DPjthPLKcRpnVOb00dnF2e5c4PziIuJS4LLLpc+Lpsbxt3IveRKdPVxXeF60vWdm7Obwu2o26/uNu5p7ofcn8w0nymeWTNz0MPIQ+BR5dE/C5+VMGvfrH5PQ0+BZ7XnIy9jL5FXrdewt6V3qvdh7xc+9j5yn+M+4zw33jLeWV/MN8C3yLfLT8Nvnl+F30N/I/9k/3r/0QCngCUBZwOJgUGBWwL7+Hp8Ib+OPzrbZfay2e1BjKC5QRVBj4KtguXBrSFoyOyQrSH355jOkc5pDoVQfujW0Adh5mGLw34MJ4WHhVeGP45wiFga0TGXNXfR3ENz30T6RJZE3ptnMU85ry1KNSo+qi5qPNo3ujS6P8YuZlnM1VidWElsSxw5LiquNm5svt/87fOH4p3iC+N7F5gvyF1weaHOwvSFpxapLhIsOpZATIhOOJTwQRAqqBaMJfITdyWOCnnCHcJnIi/RNtGI2ENcKh5O8kgqTXqS7JG8NXkkxTOlLOW5hCepkLxMDUzdmzqeFpp2IG0yPTq9MYOSkZBxQqohTZO2Z+pn5mZ2y6xlhbL+xW6Lty8elQfJa7OQrAVZLQq2QqboVFoo1yoHsmdlV2a/zYnKOZarnivN7cyzytuQN5zvn//tEsIS4ZK2pYZLVy0dWOa9rGo5sjxxedsK4xUFK4ZWBqw8uIq2Km3VT6vtV5eufr0mek1rgV7ByoLBtQFr6wtVCuWFfevc1+1dT1gvWd+1YfqGnRs+FYmKrhTbF5cVf9go3HjlG4dvyr+Z3JS0qavEuWTPZtJm6ebeLZ5bDpaql+aXDm4N2dq0Dd9WtO319kXbL5fNKNu7g7ZDuaO/PLi8ZafJzs07P1SkVPRU+lQ27tLdtWHX+G7R7ht7vPY07NXbW7z3/T7JvttVAVVN1WbVZftJ+7P3P66Jqun4lvttXa1ObXHtxwPSA/0HIw6217nU1R3SPVRSj9Yr60cOxx++/p3vdy0NNg1VjZzG4iNwRHnk6fcJ3/ceDTradox7rOEH0x92HWcdL2pCmvKaRptTmvtbYlu6T8w+0dbq3nr8R9sfD5w0PFl5SvNUyWna6YLTk2fyz4ydlZ19fi753GDborZ752PO32oPb++6EHTh0kX/i+c7vDvOXPK4dPKy2+UTV7hXmq86X23qdOo8/pPTT8e7nLuarrlca7nuer21e2b36RueN87d9L158Rb/1tWeOT3dvfN6b/fF9/XfFt1+cif9zsu72Xcn7q28T7xf9EDtQdlD3YfVP1v+3Njv3H9qwHeg89HcR/cGhYPP/pH1jw9DBY+Zj8uGDYbrnjg+OTniP3L96fynQ89kzyaeF/6i/suuFxYvfvjV69fO0ZjRoZfyl5O/bXyl/erA6xmv28bCxh6+yXgzMV70VvvtwXfcdx3vo98PT+R8IH8o/2j5sfVT0Kf7kxmTk/8EA5jz/GMzLdsAAAAgY0hSTQAAeiUAAICDAAD5/wAAgOkAAHUwAADqYAAAOpgAABdvkl/FRgAABPZJREFUeNqMyXtM1WUcx/FnNTdreAVCEEThyEFUrM2kwkpS05qVl8rugVpRUelaJdZaWWktdZKHssImgV04osgBCbwAa2Whm6GWoXHxcD1wHiI4t9/z/H68+wO3av1R3+217/b+CFStsHq/W2V1HW+wOmq8VkeN/E+dR/7SUSOtrmOnLc93jxA6LsTw71XLrUsHsNwHsdxl/09HGVb7QawOF1bn4ZF26QDDsmqNsH7be9psKcJs+fy/tRZjXvwM//678BVdT6BsMarhxZHeug+reW+TMC84+s0LDv4tH7PZgdXqwGrLx7yYP9KaHISOvUCwYh3+4iUMOiIJVmSMbBfy+4X581Zp/ryVfzi/FfPXd1AntxNwvkvg6zfQZ7Zg/rIV8/x7qB9fJlT/JPrcm4SOPctg3ihCR5dhNu2QQjfmSt2Yi27MRf+Uiz67Ef1TLv7Ct5CPZtMzJ4N2243Ij7Kwmjdhnt+EUZeFr/BmhvYkoBqewl8yD9/eCejGTVLoUzlSn8pBn8xBn85B/fAcf7z6PJ7rl9KdNBdP6nwuJc2jL+9+jJrXGNr1On9seZHgkQ0ESq8l4EzBOLKMod1XoE6slUKfXCd1wxp0Qxb6RBYDLzxGz8xb8aSm05u2kL4bF9N902I89yzHe986PEseoGP2YjqfvpNQeTr+4rmEKucz6LgS9f1jUuiy+VIfvxvz1GoGN99Hz8wFeGan0zl3Ae4lK3A/vJb2x7PpWPEI3bevoHfJKtypt9H1UgbDZx5E//goofJF+AtmoasWSaG2jZE6P5zg9hQ8Nyyie1Y6rQ+vpafMhdHXx7BpgjWMr7sbT5kL9/IHcUck0X3LtfgLVqAP3YAumoHeHYvaPkYKlRcudf54Bh5KpjP5Fi69tplgIMCQabK/rIxtO3bgqqxkmJHzdXbRknYbrWIcrWEJ9D8RjXaMRe2ciNo5QQr1QYRUjnC8C1Nxr1pD0O/HFwyQmZmJ3W4nLS0Nm83G+vXrsSwLgP6vS2kWo/lNjKN57gTMTyJRH0Si8iZKoXZdI5Ujkt55SXRtfBuAffv2sXLlSpxOJ9nZ2SQkJBAWFobX6wVgoPooLWI0v4hxuFeFY30ahdoVhcqLkEJ9GCV1QRTehZNxZ9wPQNGXX5KZmUlbWxspKSkIIUhPT0dZFibQvSaHJjGKxujxBHZGoT+ehPpwEsoRIYUqmCR1YTTBd2NoGxtOz4Y3CPoDrNuwnuhpU7lq/HgW3LGU5l4P2h+g55XNnBOjORM/jsH3ozGLYlAFMag90ahPI6VQxZOlKo5BOyfjey+GliljaL0uA7l9D2f37uess5KBoyfwbvmIJnsajVePouXeCIKFsZglsajiyX8pvEYKoySm33DGYTjj0OVxhEri6N84kfalY2i/NRb3AhvNN0+i9Y4wPC+H4yuMxTocjzoYj7F/ymVxI/+ryH5huKaeMVzxGK54QuXT8B+y4atIZqB8Nt6SVDzFqXi+mIO39Dp+PziHwdIZDJVOJ3gogZArHsM1BcMVj1E+BcMVe1GY38auNqqnYdQkEKpOJPBNEv7DdnyVdnwVdoYqki+bge9wCv6qFAJVyQS/mU6oJhHjSCJG9VSM6kRUfXi2GK6fJYy6+CyjNrHRqLP1GbWJ0qizSfV39Tap6qdLVW+Xqt4ujfokadRdVpvgNWpt54y6qc8MV44Sfw4An+t+Gj1AKyYAAAAASUVORK5CYII=" alt=""> weibo</a></li>
+<li>Feed订阅： <a href="/feed.html"><img src="data:image/gif;base64,R0lGODlhFAAUANU2APV1GfmrePZ8IeR5VPq2ieNkLf7p3NpFJveCJ/NoFfibVPR1IexiJfvdzuZrNfXGuOhUEueTevaFOfzIpNxDGeZZJNU6IOubifiVTfOnid1aLuZpLOFSJf/28vJtIvGcefaLSd5kNu9iFv/z6//48//t4uFfLfNkCeJNGuGNc/rCof/+/PVxEeldI/V5KeKMbu9nIvB2OvzQtNxMKfOPXP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAADYALAAAAAAUABQAAAb/QJstEjKZCsjCZsl0pIS2QWXaYsA8noVWIEAgFoNhhWNyMESi7Jbr/aZCFdRnZJAFJCwAt+vlOkwtEBk1hDUkExJ6bQJaGyYMLTQTDSOFHQF8jAseSFYiJwkuAQ2FE1xaHjBIMDAgARguJwABJIQTLJswDEgeIgSEJQQILAqVNQEiui1HHgkBhTUGCiwYtR0xLS0VJhtaEgoEBoQkGCfPNSoQY9xaCwAsCBPALgmkJA4cZN0CAAgY/PJqEIDwgVAECjM0bOAnwcAKGQJclKhRgoGDDjUeUDigkN8vQiBOfByAglSDAxw3IBCgYEU0FyJoEPpA4UGNDjMsaHDQR8EdPVYOMmQYQGHAhQgHLIRIsWAlgASsGMRBMWMGBQtYZ7yIsoBRKkhjOMxAiXJGGCEpHGxIYsSIhrcaQmy1EQQAOw==" alt=""></a>        <pre><code>&lt;div style=&quot;color:#556677;line-height:160%;padding:0.3em 0.5em;margin:1em;-moz-border-radius: 10px;-webkit-border-radius:10px;border-radius: 10px;&quot;&gt;&lt;/div&gt;
+</code></pre></li>
+</ul>
+</div><div class="tags"><a href="/tags/Computer/">Computer</a></div><div class="post-nav"><a href="/2017/07/19/Server-Sent-Events-教程/" class="pre">Server-Sent Events 教程</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://matchless5233.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Opinions/" style="font-size: 15px;">Opinions</a> <a href="/tags/Developer/" style="font-size: 15px;">Developer</a> <a href="/tags/Computer/" style="font-size: 15px;">Computer</a> <a href="/tags/mvc/" style="font-size: 15px;">mvc</a> <a href="/tags/mvp/" style="font-size: 15px;">mvp</a> <a href="/tags/mvvm/" style="font-size: 15px;">mvvm</a> <a href="/tags/Algorithm/" style="font-size: 15px;">Algorithm</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/08/09/图解：MVC，MVP-和-MVVM/">图解：MVC，MVP 和 MVVM</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/穷忙的人生/">穷忙的人生</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/技术决定历史/">技术决定历史</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/如何验证-Email-地址：SMTP-协议入门教程/">如何验证 Email 地址：SMTP 协议入门教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/45岁以后的人生/">45岁以后的人生</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/07/IaaS，PaaS，SaaS-的区别/">IaaS，PaaS，SaaS 的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/06/树莓派新手入门教程/">树莓派新手入门教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/05/正态分布为什么常见？/">正态分布为什么常见？</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/03/窗口管理器-xmonad-教程/">窗口管理器 xmonad 教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/02/TCP-协议简介/">TCP 协议简介</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://www.haomwei.com/" title="屠城" target="_blank">屠城</a><ul></ul><a href="http://www.ruanyifeng.com/home.html" title="阮一峰" target="_blank">阮一峰</a><ul></ul><a href="https://juejin.im/" title="掘金" target="_blank">掘金</a><ul></ul><a href="https://cnodejs.org/" title="Node.js专业中文社区" target="_blank">Node.js专业中文社区</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2017 <a href="/." rel="nofollow">Matchless.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>窗口管理器 xmonad 教程 | Matchless</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">窗口管理器 xmonad 教程</h1><a id="logo" href="/.">Matchless</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">窗口管理器 xmonad 教程</h1><div class="post-meta">Aug 3, 2017</div><div class="post-content"><p>开发者最需要的，就是一个顺手的开发环境。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072701.jpg" alt=""></p>
+<p>每个人的偏好不一样，我的开发环境是 Fish Shell + Xfce + xmonad + Vim，已经用了好多年，非常满意。</p>
+<p>三个月前，我介绍了 <a href="http://www.ruanyifeng.com/blog/2017/05/fish_shell.html" target="_blank" rel="external">Fish Shell</a>，今天就来介绍 <a href="http://xmonad.org/" target="_blank" rel="external">xmonad</a>。根据本文，读者可以从零开始配置并使用 xmonad。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072702.png" alt=""></p>
+<p>xmonad 的所有操作都通过键盘，只适合命令行的重度用户。如果你喜欢鼠标和图形界面，xmonad 不适合你。另外，它本身也不支持 Windows 系统。</p>
+<h2 id="一、xmonad-是什么？"><a href="#一、xmonad-是什么？" class="headerlink" title="一、xmonad 是什么？"></a>一、xmonad 是什么？</h2><p>xmonad 是一种窗口管理器（window manager），用来管理软件窗口的位置和大小，会自动在桌面上平铺（tiling）窗口。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072703.jpg" alt=""></p>
+<p>（图片说明：各种软件窗口）</p>
+<p>注意，窗口管理器不是桌面环境（desktop environment）。后者是一套功能完善、集成各种工具的图形用户界面，比如 Gnome 和 KDE。桌面环境肯定包含了窗口管理器，但是（某些）窗口管理器可以不需要桌面环境，独立运行，xmonad 就是这种。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072704.png" alt=""></p>
+<p>（图片说明：典型的桌面环境）</p>
+<p>桌面环境通常很重，窗口管理器就很轻，不仅体积小，资源占用也少，用户可以配置各种细节，释放出系统的最大性能。</p>
+<p>Linux 系统允许用户更换窗口管理器，有<a href="https://www.slant.co/topics/390/~best-window-managers-for-linux" target="_blank" rel="external">很多种</a>可以选择。xmonad 一直是最受欢迎的前三名，它使用 Haskell 语言编写，是世界上使用人数最多的 Haskell 软件。它的特点就是极简化，性能高。</p>
+<h2 id="二、安装"><a href="#二、安装" class="headerlink" title="二、安装"></a>二、安装</h2><p>xmonad 的官网提供<a href="http://xmonad.org/download.html" target="_blank" rel="external">二进制包</a>，各个发行版都有。如果想自己编译，也可以下载源码。 </p>
+<p>我的发行版是 Debian，安装就是一行命令。</p>
+<blockquote>
+<p>$ sudo apt-get install xmonad<br>    `</p>
+</blockquote>
+<pre><code>此外，还需要再安装两个小工具。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ sudo apt-get install xmobar dmenu
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>安装完成后，退出当前对话（session），选择 xmonad 会话重新登录。登录后，你会看到一个完全空白的桌面，什么也没有，这说明 xmonad 起作用了，因为这时还没有任何软件窗口。
+
+## 三、常用命令
+
+### 3.1 打开终端
+
+第一步，你需要打开一个窗口。一般来说，总是打开命令行终端窗口。
+
+xmonad 提供一个功能键，称为`mod`键（modifier 的缩写），所有操作都要使用这个键，默认为`alt`键，但是一般会把它改掉，比如改成`Windows`键，具体修改方法请看后文。
+
+打开终端窗口，按下`mod + shift + return`（默认为`alt + shift + return`）。这会打开一个终端窗口，占据了所有桌面空间。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072705.png)
+
+按下`mod + shift + return`，再打开一个终端窗口。它与第一个窗口水平地平分屏幕，每个窗口占据50%空间。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072706.png)
+
+注意，第二个窗口占据桌面的左边，自动获得焦点，成为当前窗口。这个左边部分就称为&quot;主栏&quot;（master pane），右边部分称为&quot;副栏&quot;，前面打开的第一个窗口自动进入副栏。
+
+再按一次`mod + shift + return`，打开第三个窗口。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072707.png)
+
+这时，第三个窗口就会占据主栏，前两个窗口自动进入副栏。规则就是，新窗口总是独占主栏，旧窗口平分副栏。
+
+### 3.2 布局模式
+
+默认的布局模式是，主栏在左边，副栏在右边。
+
+按下`mod + space`，布局模式改成主栏在上方，副栏在下方。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072708.png)
+
+再按一次`mod + space`，就变成独占模式，当前窗口独占整个桌面，其他窗口不可见。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072705.png)
+
+再按一次`mod + space`，就变回默认模式（主栏在左边，副栏在右边）。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072707.png)
+
+按下`mod + ,`（mod + 逗号），一个副栏窗口会移动到主栏，即主栏变成有两个窗口，副栏变成只有一个窗口。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072709.png)
+
+再按一次`mod + ,`（mod + 逗号），主栏变成三个窗口，副栏消失。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072710.png)
+
+按下`mod + .`（mod + 句号），主栏减少一个窗口，副栏增加一个窗口。
+
+### 3.3 移动焦点
+
+新窗口总是自动获得焦点，变成当前窗口。按下`mod + j`，焦点顺时针移动到下一个窗口。
+
+按下`mod + k`，焦点逆时针移动到上一个窗口。
+
+如果当前窗口在副栏，按下`mod + return`，会与主栏窗口对调位置。
+
+### 3.4 调整窗口顺序
+
+按下`mod + shift + j`，按照顺时针的顺序，当前窗口与下一个窗口交换位置，即当前窗口前进到下一个位置。
+
+按下`mod + shift + k`，按照逆时针顺序，当前窗口与上一个窗口交换位置。即当前窗口后退到上一个位置。
+
+### 3.5 调整栏位大小
+
+按下`mod + l`，主栏增加尺寸。
+
+按下`mod + h`，副栏增加尺寸。
+
+### 3.6 浮动窗口
+
+正常情况下，xmonad 决定了窗口的位置和大小，但有时我们希望自己控制。xmonad 允许某个窗口浮动，脱离原有的布局。
+
+按下`mod + 鼠标左键`拖动窗口，该窗口就会变成浮动窗口，可以放到屏幕的任何位置。
+
+按下`mod + 鼠标右键`可以调整窗口大小。
+
+按下`mod + t`，当前浮动窗口就会结束浮动，重新回到 xmonad 的布局。
+
+### 3.7 关闭窗口
+
+窗口可以自然关闭（比如终端窗口按`ctrl + d`），也可以让 xmonad 强行关闭它。
+
+按下`mod + shift + c`，会关闭当前窗口，焦点移到下一个窗口。
+
+### 3.8 退出 xmonad
+
+按下`mod + shift + q`，将会立刻关闭所有窗口，退出 xmonad，用户需要重新登录。
+
+## 四、工作区
+
+xmonad 提供9个工作区，相当于提供9个桌面。按下`mod + 1`到`mod + 9`切换。 xmonad 启动后，默认处于1号工作区 。
+
+如果要将一个窗口移到不同的工作区，先用`mod + j`或`mod + k`，将其变成焦点窗口，然后使用`mod + shift + 6`，就将其移到了6号工作区。
+
+我的习惯是，1号工作区是终端，2号是浏览器，4号是虚拟机。
+
+## 五、多显示器
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072712.jpg)
+
+多显示器需要使用配置工具，我用的是 xrandr。其他工具还有 Xinerama 和 winView，另外 arandr 是 xrandr 的图形界面，也可以用。
+
+下面的命令查看显示器的连接情况。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ xrandr -q
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>具体的配置教程可以看[这里](https://wiki.archlinux.org/index.php/xrandr)。
+
+使用多显示器时，每个显示器会分配到一个工作区。默认情况下，1号工作区显示在主显示器，2号工作区显示在第二个显示器。如果要将4号工作区显示在当前显示器，那么按下`mod + 4`，4号工作就会与当前屏幕中的工作区互换位置。
+
+`mod + w` 转移焦点到左显示器，`mod + e`转移焦点到右显示器。
+
+`mod + shift + w`将当前窗口移到左显示器，`mod + shift + e`将当前窗口移到右显示器。
+
+## 六、配置文件
+
+xmonad 的配置文件是`～/.xmonad/xmonad.hs`。该文件需要用户自己新建，[这里](https://gist.github.com/ruanyf/65893d5d5916bb2ffefd8ea69ff869f7)是一个简单的范例，详细的解释可以看[官网](https://wiki.haskell.org/Xmonad/Config_archive/John_Goerzen)。
+
+这个文件里面，`modMask`决定了`mod`到底是哪一个键。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>modMask = mod4Mask
+</code></pre></blockquote>
+<p>上面的这行就将<code>mod</code>键设为了<code>Windows</code>键。</p>
+<p>修改配置文件以后，按下<code>mod + q</code>，新的配置就会生效。</p>
+<h2 id="七、xmobar"><a href="#七、xmobar" class="headerlink" title="七、xmobar"></a>七、xmobar</h2><p>xmonad 的默认桌面，什么也没有，不太方便。xmobar 提供了一个状态栏，将常用信息显示在上面，比如 CPU 和内存的占用情况、天气、时间等等。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072713.jpg" alt=""></p>
+<p>（图片说明：顶部状态栏就是 xmobar。）</p>
+<p>它的配置文件是<code>~/.xmobarrc</code>（教程<a href="https://wiki.archlinux.org/index.php/Xmobar" target="_blank" rel="external">1</a>，<a href="http://projects.haskell.org/xmobar/" target="_blank" rel="external">2</a>，<a href="http://beginners-guide-to-xmonad.readthedocs.io/configure_xmobar.html" target="_blank" rel="external">3</a>）。<a href="https://gist.github.com/ruanyf/9d234b57ad1894d559abe57449fec65c" target="_blank" rel="external">这里</a>是一个最简单配置，<a href="https://gist.github.com/ruanyf/a640a98d41383387d3a6401796f54710" target="_blank" rel="external">这里</a>是我的笔记本电脑使用的配置。</p>
+<h2 id="八、dmenu"><a href="#八、dmenu" class="headerlink" title="八、dmenu"></a>八、dmenu</h2><p>最后，dmenu 在桌面顶部提供了一个菜单条，可以快速启动应用程序。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017072714.png" alt=""></p>
+<p>（图片说明：dmenu 显示在屏幕顶部，输入<code>fire</code>会自动显示包含<code>fire</code>的启动命令。）</p>
+<p>它从系统变量<code>$PATH</code>指定的路径中，寻找所有的应用程序，根据用户的键入，动态提示最符合的结果。</p>
+<p>按下<code>mod + p</code>就会进入<code>dmenu</code>菜单栏，按下<code>ESC</code>键可以退出。方向键用来选择应用程序，<code>return</code>键用来启动。</p>
+<p>（完）</p>
+<pre><code>&lt;div style=&quot;color:#556677;line-height:160%;padding:0.3em 0.5em;border:1px solid #d3d3d3;margin:1em;background-color:#AAD2F0;-moz-border-radius: 10px;-webkit-border-radius:10px;border-radius: 10px;&quot;&gt;
+</code></pre><h3 id="文档信息"><a href="#文档信息" class="headerlink" title="文档信息"></a>文档信息</h3><ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank" rel="external">创意共享3.0许可证</a>）</li>
+<li>发表日期： <abbr class="published" title="2017-07-29T08:25:25+08:00">2017年7月29日</abbr></li>
+<li>更多内容： <a href="http://www.ruanyifeng.com/blog/archives.html" target="_blank" rel="external"> 档案</a>  »<a href="http://www.ruanyifeng.com/blog/developer/" target="_blank" rel="external"> 开发者手册</a></li>
+<li>博客文集：<a href="http://road.ruanyifeng.com" target="_blank" rel="external">《前方的路》</a>，<a href="https://ruanyf.github.io/survivor" target="_blank" rel="external">《未来世界的幸存者》</a></li>
+<li>社交媒体：<a href="https://twitter.com/ruanyf" target="_blank" rel="external"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAk1JREFUeNqsVc9rE0EU/mZ3dhPNJl2bVIk/Km09aFBE8GLvnrwJXvwLxIsgCP4Fnit6E8Gb0IMHwUsL9SSNgiAoooJIpE1Joo1h82uT7IxvxmRN3Q32kAdvdrI773vfe+/bDTu9WioDcDAda3Ja8piepQ1avCkCeny0Y+R9KenKwOmHHLvPaKn7AtVOoO8dOWDCMpg+41gMQv5FNEJACgoE8MsPNLDBhgfoutMOsJDmWLmU037C4TApciljwQ/kHoohQxV06+wMXNvE7WINuaSpvdYVKLgWnl3O4zAxU3Z1IYVGT+B5qYWV9z2kbQaT/cOwTsxOUUYF+mB5Dkmi8HG3h2q9hxsFNwRTdvQgxxnXRrMvIdkEhllis/qtiWuLDm4WZnBlPoWnXz28LHdw0uGR7m9Wu3j0qYGEubfn4UlBfXO4gTZltRNMg9w9f0i7kNFxllsBlS0x75gYfxyWTBUjT2W5CSMSPBrQuG21+hiMDS8CeCzF8eSLp13uQ3Ab1IqMFZN8tFHPmgOBF99bYP8Be1Xp6t7OJszJgKpPSiZvaj7uf2hguz2IBQuozDvFH6RDBjuK9wdQDvt0nMpW+8efGyh5UcAeZb2+UcHbnz5Jx4wdlp4yJYU3kLiQtfBwOYeLc8nIwfXtNu69q2Oz4mMxbemYOOOjKarhvq51KUjg3GwiFPIuvcNF6pnSnWK0lOEabNLgQh1aJFAhlGB9rG110B2+oyRNPc0sZbRNFltmLKDKqj4Qrm1ojzOxDz2pyPQ0P7CK4c40/wJ+CzAAGYrXsvfFXR4AAAAASUVORK5CYII=" alt=""> twitter</a>，<a href="http://weibo.com/ruanyf" target="_blank" rel="external"><img src="data:image/png;base64,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" alt=""> weibo</a></li>
+<li>Feed订阅： <a href="/feed.html"><img src="data:image/gif;base64,R0lGODlhFAAUANU2APV1GfmrePZ8IeR5VPq2ieNkLf7p3NpFJveCJ/NoFfibVPR1IexiJfvdzuZrNfXGuOhUEueTevaFOfzIpNxDGeZZJNU6IOubifiVTfOnid1aLuZpLOFSJf/28vJtIvGcefaLSd5kNu9iFv/z6//48//t4uFfLfNkCeJNGuGNc/rCof/+/PVxEeldI/V5KeKMbu9nIvB2OvzQtNxMKfOPXP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAADYALAAAAAAUABQAAAb/QJstEjKZCsjCZsl0pIS2QWXaYsA8noVWIEAgFoNhhWNyMESi7Jbr/aZCFdRnZJAFJCwAt+vlOkwtEBk1hDUkExJ6bQJaGyYMLTQTDSOFHQF8jAseSFYiJwkuAQ2FE1xaHjBIMDAgARguJwABJIQTLJswDEgeIgSEJQQILAqVNQEiui1HHgkBhTUGCiwYtR0xLS0VJhtaEgoEBoQkGCfPNSoQY9xaCwAsCBPALgmkJA4cZN0CAAgY/PJqEIDwgVAECjM0bOAnwcAKGQJclKhRgoGDDjUeUDigkN8vQiBOfByAglSDAxw3IBCgYEU0FyJoEPpA4UGNDjMsaHDQR8EdPVYOMmQYQGHAhQgHLIRIsWAlgASsGMRBMWMGBQtYZ7yIsoBRKkhjOMxAiXJGGCEpHGxIYsSIhrcaQmy1EQQAOw==" alt=""></a>        <pre><code>&lt;div style=&quot;color:#556677;line-height:160%;padding:0.3em 0.5em;margin:1em;-moz-border-radius: 10px;-webkit-border-radius:10px;border-radius: 10px;&quot;&gt;&lt;/div&gt;
+</code></pre></li>
+</ul>
+</div><div class="tags"><a href="/tags/Developer/">Developer</a></div><div class="post-nav"><a href="/2017/08/05/正态分布为什么常见？/" class="pre">正态分布为什么常见？</a><a href="/2017/08/02/TCP-协议简介/" class="next">TCP 协议简介</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://matchless5233.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Opinions/" style="font-size: 15px;">Opinions</a> <a href="/tags/Developer/" style="font-size: 15px;">Developer</a> <a href="/tags/Computer/" style="font-size: 15px;">Computer</a> <a href="/tags/mvc/" style="font-size: 15px;">mvc</a> <a href="/tags/mvp/" style="font-size: 15px;">mvp</a> <a href="/tags/mvvm/" style="font-size: 15px;">mvvm</a> <a href="/tags/Algorithm/" style="font-size: 15px;">Algorithm</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/08/09/图解：MVC，MVP-和-MVVM/">图解：MVC，MVP 和 MVVM</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/穷忙的人生/">穷忙的人生</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/技术决定历史/">技术决定历史</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/如何验证-Email-地址：SMTP-协议入门教程/">如何验证 Email 地址：SMTP 协议入门教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/45岁以后的人生/">45岁以后的人生</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/07/IaaS，PaaS，SaaS-的区别/">IaaS，PaaS，SaaS 的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/06/树莓派新手入门教程/">树莓派新手入门教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/05/正态分布为什么常见？/">正态分布为什么常见？</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/03/窗口管理器-xmonad-教程/">窗口管理器 xmonad 教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/02/TCP-协议简介/">TCP 协议简介</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://www.haomwei.com/" title="屠城" target="_blank">屠城</a><ul></ul><a href="http://www.ruanyifeng.com/home.html" title="阮一峰" target="_blank">阮一峰</a><ul></ul><a href="https://juejin.im/" title="掘金" target="_blank">掘金</a><ul></ul><a href="https://cnodejs.org/" title="Node.js专业中文社区" target="_blank">Node.js专业中文社区</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2017 <a href="/." rel="nofollow">Matchless.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

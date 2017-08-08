@@ -1,0 +1,277 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>树莓派新手入门教程 | Matchless</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">树莓派新手入门教程</h1><a id="logo" href="/.">Matchless</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">树莓派新手入门教程</h1><div class="post-meta">Aug 6, 2017</div><div class="post-content"><p><a href="https://www.raspberrypi.org/" target="_blank" rel="external">树莓派</a>（Raspberry Pi）是学习计算机知识、架设服务器的好工具，价格低廉，可玩性高。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061501.png" alt=""></p>
+<p>本文根据我的亲身经验，介绍如何从零开始，搭建一个树莓派服务器，控制 LED 灯。你会看到，树莓派玩起来实在很容易。</p>
+<p>我要感谢 <a href="https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&amp;utm_medium=display&amp;utm_campaign=ruanyifeng_20170615&amp;utm_content=find_new_job&amp;campaign_code=ruanyifeng" target="_blank" rel="external">100offer</a> 对我提供赞助。<a href="https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&amp;utm_medium=display&amp;utm_campaign=ruanyifeng_20170615&amp;utm_content=find_new_job&amp;campaign_code=ruanyifeng" target="_blank" rel="external">100offer</a> 是国内第一流的人力资源服务网站，本文结尾有他们的<a href="#100offer">简介</a>，最近想换工作的朋友可以<a href="https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&amp;utm_medium=display&amp;utm_campaign=ruanyifeng_20170615&amp;utm_content=find_new_job&amp;campaign_code=ruanyifeng" target="_blank" rel="external">看一下</a>。</p>
+<h2 id="一、型号"><a href="#一、型号" class="headerlink" title="一、型号"></a>一、型号</h2><p>树莓派是一个迷你电脑，集成在一块电路板。目前，最新的型号有两个。</p>
+<p>（1）Raspberry Pi 3代 B 型 </p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061502.jpg" alt=""></p>
+<p>（2）Raspberry Pi zero （含 zero w）</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061503.jpg" alt=""></p>
+<p>虽然后者便宜，但是少了许多接口（比如只有一个 USB 口），CPU 和内存都比较低，配件也少，因此推荐购买第3代的 B 型。以下都针对这个型号，但大部分内容对 zero 也适用。</p>
+<h2 id="二、配件"><a href="#二、配件" class="headerlink" title="二、配件"></a>二、配件</h2><p>树莓派本身只是一个主机。要运行起来，必须有配件。</p>
+<p>（1）电源</p>
+<p>Micro USB 接口的手机充电器，就可以充当电源，但输出必须是 5V 电压、至少 2A 电流。充电宝当电源也没问题。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061504.jpg" alt=""></p>
+<p>（2）Micro SD 卡</p>
+<p>树莓派不带硬盘，Micro SD 卡就是硬盘。最小容量8G，推荐使用16G和32G的卡。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061506.jpg" alt=""></p>
+<p>（3）显示器</p>
+<p>树莓派有 HDMI 输出，显示器必须有该接口。如果有 HDMI 转 VGA 的转接线，那么 VGA 显示器也可以。我用的是一个 7 寸的液晶监视器。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061507.jpg" alt=""></p>
+<p>不过，显示器只在安装系统时需要，后面可以 <a href="http://www.ruanyifeng.com/blog/2011/12/ssh_remote_login.html" target="_blank" rel="external">SSH</a> 登录，就不需要了。</p>
+<p>（4）无线键鼠</p>
+<p>树莓派内置蓝牙，USB 或蓝牙的无线键鼠都可以用。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061508.jpg" alt=""></p>
+<p>就像显示器一样，如果树莓派已经装好系统，而且只当作服务器，无线键鼠也可以不配。</p>
+<h2 id="三、电子元件"><a href="#三、电子元件" class="headerlink" title="三、电子元件"></a>三、电子元件</h2><p>除了配件，下面的实验还需要一些电子元件。</p>
+<p>（1）面包板（一块）</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061509.jpg" alt=""></p>
+<p>（2）连接线（若干）</p>
+<p>注意，连接线必须一端是公头，一端是母头。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061510.jpg" alt=""></p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061511.jpg" alt=""></p>
+<p>另外，最好也备一些两端都是公头的连接线。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061512.jpg" alt=""></p>
+<p>（3）LED 二极管（若干）</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061512.gif" alt=""></p>
+<p>（4）270欧姆的电阻（若干）</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061513.jpg" alt=""></p>
+<h2 id="四、安装系统"><a href="#四、安装系统" class="headerlink" title="四、安装系统"></a>四、安装系统</h2><p>如果商家已经装好系统，可以跳过这一步，否则需要自己安装操作系统。</p>
+<p>官方提供的操作系统是 <a href="https://www.raspberrypi.org/downloads/raspbian/" target="_blank" rel="external">Raspbian</a>，这是 Debian 系统的定制版。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061514.png" alt=""></p>
+<p>官方还提供一个安装器 <a href="https://www.raspberrypi.org/documentation/installation/noobs.md" target="_blank" rel="external">NOOBS</a>，建议通过它来安装 Raspbian，相对简单一点。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061515.png" alt=""></p>
+<blockquote>
+<ol>
+<li><a href="https://www.raspberrypi.org/downloads/noobs/" target="_blank" rel="external">下载 NOOBS</a>。</li>
+<li>格式化 Micro SD 卡为 FAT 格式（<a href="https://www.raspberrypi.org/documentation/installation/noobs.md" target="_blank" rel="external">操作指导</a>）。</li>
+<li>解压<code>NOOBS.zip</code>到 Micro SD 卡根目录。</li>
+<li>插入 Micro SD 卡到树莓派底部的卡槽，接通电源，启动系统。</li>
+</ol>
+</blockquote>
+<p>正常情况下，按照屏幕上的提示，一路回车，就能装好系统。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061516.png" alt=""></p>
+<h2 id="五、SSH-登录"><a href="#五、SSH-登录" class="headerlink" title="五、SSH 登录"></a>五、SSH 登录</h2><p>安装系统后，树莓派就可以上网了（Wifi 或者网线）。这时，你要看一下它的局域网 IP 地址，可以使用下面的命令。</p>
+<blockquote>
+<p>$ sudo ifconfig<br>    `</p>
+</blockquote>
+<pre><code>然后，更改系统设置，打开 SSH 登录（默认是禁止的）。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061521.png)
+
+接着，从另一台电脑 SSH 登录树莓派。下面的命令是在局域网的另一台电脑上执行的。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ ssh pi@192.168.1.5
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>上面代码中，`192.168.1.5`是我的树莓派的地址，你要换成你的地址。树莓派的默认用户是`pi`。
+
+树莓派会提示你输入密码。`pi`的默认密码是`raspberry`。正常情况下，这样就可以登录树莓派了。接着，就可以进行各种服务器[操作](http://www.ruanyifeng.com/blog/2014/03/server_setup.html)了，比如修改密码。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ passwd
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>后面的实验需要将用户加入`gpio`用户组。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ sudo adduser pi gpio
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>上面的代码表示将用户`pi`加入`gpio`用户组。
+
+## 六、安装 Node
+
+为了运行 Node 脚本，树莓派必须安装 Node，可以参考[这篇文章](http://thisdavej.com/beginners-guide-to-installing-node-js-on-a-raspberry-pi/#install-node)。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+$ sudo apt install nodejs
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>正常情况下，Node 8.x 版就已经安装成功了。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ node -v
+v8.1.0
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>## 七、点亮 LED
+
+树莓派提供了一组对外的 IO 接口，称为 GPIO（ 通用 IO 接口，General-purpose input/output）。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061518.png)
+
+它的 40 个脚的定义如下图。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061519.png)
+
+注意，左上角的第1针（3.3V）是一个方块，其他针脚都是圆的。将树莓派翻过来，背后可以看到 GPIO 有一个角是方的，通过这种方法就可以确认哪一个针眼是3.3V。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061516.jpg)
+
+通过 GPIO ，树莓派可以与其他电子元件连接。下面根据 Jonathan Perkin 的[文章](http://www.perkin.org.uk/posts/a-nodejs-powered-8-bit-cpu-part-one.html)，使用树莓派连接 LED 二极管。
+
+这里需要用到面包板。本质上，面包板就是几根导线，上面开了许多可以连到导线的孔。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061519.jpg)
+
+`+`极和`-`极是两根垂直的导线，标着`1`、`5`、`10`这些数字的行，每一行都是一根水平的导线。导线与导线之间互不连接，另外，面包板的左右两半也是互不连接的。
+
+然后，按照下面的图，将树莓派、面包板、LED 灯、电阻连起来。
+
+![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061520.jpg)
+
+上图中，红色导线表示电流的正极，从 GPIO 的第1针（3.3V）连到面包板。黑色导线表示电流的负极，从 GPIO 第三排的第6针（ground）连到面包板。它们连到面包板的哪个眼并不重要，但必须保证能组成一个完整的电路（上图的箭头流向）。注意，LED 二极管也有正负极，长脚表示正极，短脚表示负极。电阻没有正负极。
+
+连接完成后，打开树莓派的电源，LED 应该就会亮起来了。
+
+## 八、LED 控制脚本
+
+下面，我们使用 Node 脚本控制 LED。
+
+首先，将正极的导线从1号针脚（3.3V）拔出，插到第6排的11号针脚（上图的 GPIO 17）。这个针脚的电流是脚本可以控制的。
+
+然后，在树莓派上新建一个实验目录，并安装控制 GPIO 的 Node 模块[`rpio`](https://www.npmjs.com/package/rpio)。。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ mkdir led-demo &amp;&amp; cd led-demo
+$ npm init -y
+$ npm install -S rpio
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>接着，新建一个脚本[`led-on.js`](https://github.com/ruanyf/rpio-led-demo/blob/master/led-on.js)。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>// led-on.js
+var rpio = require(&apos;rpio&apos;);
+
+// 打开 11 号针脚（GPIO17) 作为输出
+rpio.open(11, rpio.OUTPUT);
+
+// 指定 11 号针脚输出电流（HIGH）
+rpio.write(11, rpio.HIGH);
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>运行这个脚本，应该就会看到 LED 灯泡变亮了。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ node led-on.js
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>再新建一个`led-off.js`脚本，只要改一行（完整代码看[这里](https://github.com/ruanyf/rpio-led-demo/blob/master/led-off.js)）。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>// led-off.js
+//...
+
+// 指定 11 号针脚停止输出电流（LOW）
+rpio.write(11, rpio.LOW);
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>运行这个脚本，LED 灯泡应该就会熄灭了。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ node led-off.js
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>有了这两个脚本，让 LED 闪烁就轻而易举了。新建一个[`led-blink.js`](https://github.com/ruanyf/rpio-led-demo/blob/master/led-blink.js)脚本。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>// led-blink.js
+var rpio = require(&apos;rpio&apos;);
+rpio.open(11, rpio.OUTPUT);
+
+function blink() {
+  rpio.write(11, rpio.HIGH);
+  setTimeout(function ledoff() {
+    rpio.write(11, rpio.LOW);
+  }, 50);
+}
+
+setInterval(blink, 100);
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>上面的脚本让 LED 每秒闪烁10次。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ node led-blink.js
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>## 九、HTTP 服务器
+
+通过控制 LED 可以做很多事，比如架设一个 HTTP 服务器，每当有人访问，LED 就闪烁一下。
+
+首先，在刚才的目录里面装一个服务器模块。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ npm install -S server
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>然后，新建一个脚本`server.js`（完整代码看[这里](https://github.com/ruanyf/rpio-led-demo/blob/master/serve.js)）。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>// server.js
+var server = require(&apos;server&apos;);
+var { get } = server.router;
+
+// ...
+
+server({ port: 8080 }, [
+  get(&apos;/&apos; ,  ctx =&gt; {
+    console.log(&apos;a request is coming...&apos;);
+    blink();
+  }),
+]);
+
+console.log(&apos;server starts on 8080 port&apos;);
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>运行这个脚本。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ node server.js
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>然后，再打开一个命令行终端，访问8080端口，LED 就会闪一下。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>$ curl http://localhost:8080
+</code></pre></blockquote>
+<p>好了，今天的教程就到这里。接下来，你可以自己探索，做更多的尝试，比如写一个<a href="http://www.ruanyifeng.com/blog/2015/12/a-mocha-tutorial-of-examples.html" target="_blank" rel="external">测试用例脚本</a>，只要测试失败 LED 就会长亮，或者组装一个<a href="http://www.perkin.org.uk/posts/a-nodejs-powered-8-bit-cpu-part-two.html" target="_blank" rel="external">8位的加法器</a>。</p>
+<p>（正文完）</p>
+<p>================================</p>
+<p><a id="100offer"></a></p>
+<p>下面是推广时间，向大家推荐求职就业的好帮手—-<a href="https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&amp;utm_medium=display&amp;utm_campaign=ruanyifeng_20170615&amp;utm_content=find_new_job&amp;campaign_code=ruanyifeng" target="_blank" rel="external">100offer</a>。</p>
+<p>如果你对现在工作不甚满意，希望寻找更好的职位，或者你已经有了很多工作邀请，感到无所适从，不知道哪个最合适自己，请尝试一下 <a href="https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&amp;utm_medium=display&amp;utm_campaign=ruanyifeng_20170615&amp;utm_content=find_new_job&amp;campaign_code=ruanyifeng" target="_blank" rel="external">100offer</a>。它能让你节省精力，从海量机会中找到最适合自己的那个。</p>
+<p><a href="https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&amp;utm_medium=display&amp;utm_campaign=ruanyifeng_20170615&amp;utm_content=find_new_job&amp;campaign_code=ruanyifeng" target="_blank" rel="external"><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017061520.png" alt=""></a></p>
+<p><a href="https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&amp;utm_medium=display&amp;utm_campaign=ruanyifeng_20170615&amp;utm_content=find_new_job&amp;campaign_code=ruanyifeng" target="_blank" rel="external">100offer</a> 会对平台上的人才和企业进行严格筛选，让”最好的人才”和”最好的公司”相遇。点击<a href="https://cn.100offer.com/how-it-works/?utm_source=ruanyifeng&amp;utm_medium=display&amp;utm_campaign=ruanyifeng_20170615&amp;utm_content=find_new_job&amp;campaign_code=ruanyifeng" target="_blank" rel="external">这里</a>注册，提交资料并通过网站对您的评估和配对后，就可以收获 5～10 个满足你要求的好机会。</p>
+<p>（完）</p>
+<pre><code>&lt;div style=&quot;color:#556677;line-height:160%;padding:0.3em 0.5em;border:1px solid #d3d3d3;margin:1em;background-color:#AAD2F0;-moz-border-radius: 10px;-webkit-border-radius:10px;border-radius: 10px;&quot;&gt;
+</code></pre><h3 id="文档信息"><a href="#文档信息" class="headerlink" title="文档信息"></a>文档信息</h3><ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank" rel="external">创意共享3.0许可证</a>）</li>
+<li>发表日期： <abbr class="published" title="2017-06-15T17:41:51+08:00">2017年6月15日</abbr></li>
+<li>更多内容： <a href="http://www.ruanyifeng.com/blog/archives.html" target="_blank" rel="external"> 档案</a>  »<a href="http://www.ruanyifeng.com/blog/developer/" target="_blank" rel="external"> 开发者手册</a></li>
+<li>博客文集：<a href="http://road.ruanyifeng.com" target="_blank" rel="external">《前方的路》</a>，<a href="https://ruanyf.github.io/survivor" target="_blank" rel="external">《未来世界的幸存者》</a></li>
+<li>社交媒体：<a href="https://twitter.com/ruanyf" target="_blank" rel="external"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAk1JREFUeNqsVc9rE0EU/mZ3dhPNJl2bVIk/Km09aFBE8GLvnrwJXvwLxIsgCP4Fnit6E8Gb0IMHwUsL9SSNgiAoooJIpE1Joo1h82uT7IxvxmRN3Q32kAdvdrI773vfe+/bDTu9WioDcDAda3Ja8piepQ1avCkCeny0Y+R9KenKwOmHHLvPaKn7AtVOoO8dOWDCMpg+41gMQv5FNEJACgoE8MsPNLDBhgfoutMOsJDmWLmU037C4TApciljwQ/kHoohQxV06+wMXNvE7WINuaSpvdYVKLgWnl3O4zAxU3Z1IYVGT+B5qYWV9z2kbQaT/cOwTsxOUUYF+mB5Dkmi8HG3h2q9hxsFNwRTdvQgxxnXRrMvIdkEhllis/qtiWuLDm4WZnBlPoWnXz28LHdw0uGR7m9Wu3j0qYGEubfn4UlBfXO4gTZltRNMg9w9f0i7kNFxllsBlS0x75gYfxyWTBUjT2W5CSMSPBrQuG21+hiMDS8CeCzF8eSLp13uQ3Ab1IqMFZN8tFHPmgOBF99bYP8Be1Xp6t7OJszJgKpPSiZvaj7uf2hguz2IBQuozDvFH6RDBjuK9wdQDvt0nMpW+8efGyh5UcAeZb2+UcHbnz5Jx4wdlp4yJYU3kLiQtfBwOYeLc8nIwfXtNu69q2Oz4mMxbemYOOOjKarhvq51KUjg3GwiFPIuvcNF6pnSnWK0lOEabNLgQh1aJFAhlGB9rG110B2+oyRNPc0sZbRNFltmLKDKqj4Qrm1ojzOxDz2pyPQ0P7CK4c40/wJ+CzAAGYrXsvfFXR4AAAAASUVORK5CYII=" alt=""> twitter</a>，<a href="http://weibo.com/ruanyf" target="_blank" rel="external"><img src="data:image/png;base64,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" alt=""> weibo</a></li>
+<li>Feed订阅： <a href="/feed.html"><img src="data:image/gif;base64,R0lGODlhFAAUANU2APV1GfmrePZ8IeR5VPq2ieNkLf7p3NpFJveCJ/NoFfibVPR1IexiJfvdzuZrNfXGuOhUEueTevaFOfzIpNxDGeZZJNU6IOubifiVTfOnid1aLuZpLOFSJf/28vJtIvGcefaLSd5kNu9iFv/z6//48//t4uFfLfNkCeJNGuGNc/rCof/+/PVxEeldI/V5KeKMbu9nIvB2OvzQtNxMKfOPXP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAADYALAAAAAAUABQAAAb/QJstEjKZCsjCZsl0pIS2QWXaYsA8noVWIEAgFoNhhWNyMESi7Jbr/aZCFdRnZJAFJCwAt+vlOkwtEBk1hDUkExJ6bQJaGyYMLTQTDSOFHQF8jAseSFYiJwkuAQ2FE1xaHjBIMDAgARguJwABJIQTLJswDEgeIgSEJQQILAqVNQEiui1HHgkBhTUGCiwYtR0xLS0VJhtaEgoEBoQkGCfPNSoQY9xaCwAsCBPALgmkJA4cZN0CAAgY/PJqEIDwgVAECjM0bOAnwcAKGQJclKhRgoGDDjUeUDigkN8vQiBOfByAglSDAxw3IBCgYEU0FyJoEPpA4UGNDjMsaHDQR8EdPVYOMmQYQGHAhQgHLIRIsWAlgASsGMRBMWMGBQtYZ7yIsoBRKkhjOMxAiXJGGCEpHGxIYsSIhrcaQmy1EQQAOw==" alt=""></a>        <pre><code>&lt;div style=&quot;color:#556677;line-height:160%;padding:0.3em 0.5em;margin:1em;-moz-border-radius: 10px;-webkit-border-radius:10px;border-radius: 10px;&quot;&gt;&lt;/div&gt;
+</code></pre></li>
+</ul>
+</div><div class="tags"><a href="/tags/Developer/">Developer</a></div><div class="post-nav"><a href="/2017/08/07/IaaS，PaaS，SaaS-的区别/" class="pre">IaaS，PaaS，SaaS 的区别</a><a href="/2017/08/05/正态分布为什么常见？/" class="next">正态分布为什么常见？</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://matchless5233.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Opinions/" style="font-size: 15px;">Opinions</a> <a href="/tags/Developer/" style="font-size: 15px;">Developer</a> <a href="/tags/Computer/" style="font-size: 15px;">Computer</a> <a href="/tags/mvc/" style="font-size: 15px;">mvc</a> <a href="/tags/mvp/" style="font-size: 15px;">mvp</a> <a href="/tags/mvvm/" style="font-size: 15px;">mvvm</a> <a href="/tags/Algorithm/" style="font-size: 15px;">Algorithm</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/08/09/图解：MVC，MVP-和-MVVM/">图解：MVC，MVP 和 MVVM</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/穷忙的人生/">穷忙的人生</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/技术决定历史/">技术决定历史</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/如何验证-Email-地址：SMTP-协议入门教程/">如何验证 Email 地址：SMTP 协议入门教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/45岁以后的人生/">45岁以后的人生</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/07/IaaS，PaaS，SaaS-的区别/">IaaS，PaaS，SaaS 的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/06/树莓派新手入门教程/">树莓派新手入门教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/05/正态分布为什么常见？/">正态分布为什么常见？</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/03/窗口管理器-xmonad-教程/">窗口管理器 xmonad 教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/02/TCP-协议简介/">TCP 协议简介</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://www.haomwei.com/" title="屠城" target="_blank">屠城</a><ul></ul><a href="http://www.ruanyifeng.com/home.html" title="阮一峰" target="_blank">阮一峰</a><ul></ul><a href="https://juejin.im/" title="掘金" target="_blank">掘金</a><ul></ul><a href="https://cnodejs.org/" title="Node.js专业中文社区" target="_blank">Node.js专业中文社区</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2017 <a href="/." rel="nofollow">Matchless.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

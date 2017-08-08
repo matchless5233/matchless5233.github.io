@@ -1,0 +1,370 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>WebSocket 教程 | Matchless</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/7.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">WebSocket 教程</h1><a id="logo" href="/.">Matchless</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">WebSocket 教程</h1><div class="post-meta">Jul 31, 2017</div><div class="post-content"><p><a href="http://websocket.org/" target="_blank" rel="external">WebSocket</a> 是一种网络通信协议，很多高级功能都需要它。</p>
+<p>本文介绍 WebSocket 协议的使用方法。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017051501.png" alt=""></p>
+<h2 id="一、为什么需要-WebSocket？"><a href="#一、为什么需要-WebSocket？" class="headerlink" title="一、为什么需要 WebSocket？"></a>一、为什么需要 WebSocket？</h2><p>初次接触 WebSocket 的人，都会问同样的问题：我们已经有了 HTTP 协议，为什么还需要另一个协议？它能带来什么好处？</p>
+<p>答案很简单，因为 HTTP 协议有一个缺陷：通信只能由客户端发起。</p>
+<p>举例来说，我们想了解今天的天气，只能是客户端向服务器发出请求，服务器返回查询结果。HTTP 协议做不到服务器主动向客户端推送信息。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017051507.jpg" alt=""></p>
+<p>这种单向请求的特点，注定了如果服务器有连续的状态变化，客户端要获知就非常麻烦。我们只能使用<a href="https://www.pubnub.com/blog/2014-12-01-http-long-polling/" target="_blank" rel="external">“轮询”</a>：每隔一段时候，就发出一个询问，了解服务器有没有新的信息。最典型的场景就是聊天室。</p>
+<p>轮询的效率低，非常浪费资源（因为必须不停连接，或者 HTTP 连接始终打开）。因此，工程师们一直在思考，有没有更好的方法。WebSocket 就是这样发明的。</p>
+<h2 id="二、简介"><a href="#二、简介" class="headerlink" title="二、简介"></a>二、简介</h2><p>WebSocket 协议在2008年诞生，2011年成为国际标准。所有浏览器都已经支持了。</p>
+<p>它的最大特点就是，服务器可以主动向客户端推送信息，客户端也可以主动向服务器发送信息，是真正的双向平等对话，属于<a href="https://en.wikipedia.org/wiki/Push_technology" target="_blank" rel="external">服务器推送技术</a>的一种。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017051502.png" alt=""></p>
+<p>其他特点包括：</p>
+<p>（1）建立在 TCP 协议之上，服务器端的实现比较容易。</p>
+<p>（2）与 HTTP 协议有着良好的兼容性。默认端口也是80和443，并且握手阶段采用 HTTP 协议，因此握手时不容易屏蔽，能通过各种 HTTP 代理服务器。</p>
+<p>（3）数据格式比较轻量，性能开销小，通信高效。</p>
+<p>（4）可以发送文本，也可以发送二进制数据。</p>
+<p>（5）没有同源限制，客户端可以与任意服务器通信。</p>
+<p>（6）协议标识符是<code>ws</code>（如果加密，则为<code>wss</code>），服务器网址就是 URL。</p>
+<blockquote>
+<p>ws://example.com:80/some/path<br>    `</p>
+</blockquote>
+<pre><code>![](http://www.ruanyifeng.com/blogimg/asset/2017/bg2017051503.jpg)
+
+## 三、客户端的简单示例
+
+WebSocket 的用法相当简单。
+
+下面是一个网页脚本的例子（点击[这里](http://jsbin.com/muqamiqimu/edit?js,console)看运行结果），基本上一眼就能明白。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>var ws = new WebSocket(&quot;wss://echo.websocket.org&quot;);
+
+ws.onopen = function(evt) { 
+  console.log(&quot;Connection open ...&quot;); 
+  ws.send(&quot;Hello WebSockets!&quot;);
+};
+
+ws.onmessage = function(evt) {
+  console.log( &quot;Received Message: &quot; + evt.data);
+  ws.close();
+};
+
+ws.onclose = function(evt) {
+  console.log(&quot;Connection closed.&quot;);
+};      
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>## 四、客户端的 API
+
+WebSocket 客户端的 API 如下。
+
+### 4.1 WebSocket 构造函数
+
+WebSocket 对象作为一个构造函数，用于新建 WebSocket 实例。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>var ws = new WebSocket(&apos;ws://localhost:8080&apos;);
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>执行上面语句之后，客户端就会与服务器进行连接。
+
+实例对象的所有属性和方法清单，参见[这里](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)。
+
+### 4.2 webSocket.readyState
+
+`readyState`属性返回实例对象的当前状态，共有四种。
+
+&gt; *   CONNECTING：值为0，表示正在连接。
+</code></pre><blockquote>
+<ul>
+<li>OPEN：值为1，表示连接成功，可以通信了。</li>
+<li>CLOSING：值为2，表示连接正在关闭。</li>
+<li>CLOSED：值为3，表示连接已经关闭，或者打开连接失败。</li>
+</ul>
+</blockquote>
+<pre><code>下面是一个示例。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>switch (ws.readyState) {
+  case WebSocket.CONNECTING:
+    // do something
+    break;
+  case WebSocket.OPEN:
+    // do something
+    break;
+  case WebSocket.CLOSING:
+    // do something
+    break;
+  case WebSocket.CLOSED:
+    // do something
+    break;
+  default:
+    // this never happens
+    break;
+}
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>### 4.3 webSocket.onopen
+
+实例对象的`onopen`属性，用于指定连接成功后的回调函数。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>ws.onopen = function () {
+  ws.send(&apos;Hello Server!&apos;);
+}
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>如果要指定多个回调函数，可以使用`addEventListener`方法。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>ws.addEventListener(&apos;open&apos;, function (event) {
+  ws.send(&apos;Hello Server!&apos;);
+});
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>### 4.4 webSocket.onclose
+
+实例对象的`onclose`属性，用于指定连接关闭后的回调函数。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>ws.onclose = function(event) {
+  var code = event.code;
+  var reason = event.reason;
+  var wasClean = event.wasClean;
+  // handle close event
+};
+
+ws.addEventListener(&quot;close&quot;, function(event) {
+  var code = event.code;
+  var reason = event.reason;
+  var wasClean = event.wasClean;
+  // handle close event
+});
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>### 4.5 webSocket.onmessage
+
+实例对象的`onmessage`属性，用于指定收到服务器数据后的回调函数。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>ws.onmessage = function(event) {
+  var data = event.data;
+  // 处理数据
+};
+
+ws.addEventListener(&quot;message&quot;, function(event) {
+  var data = event.data;
+  // 处理数据
+});
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>注意，服务器数据可能是文本，也可能是二进制数据（`blob`对象或`Arraybuffer`对象）。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>ws.onmessage = function(event){
+  if(typeof event.data === String) {
+    console.log(&quot;Received data string&quot;);
+  }
+
+  if(event.data instanceof ArrayBuffer){
+    var buffer = event.data;
+    console.log(&quot;Received arraybuffer&quot;);
+  }
+}
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>除了动态判断收到的数据类型，也可以使用`binaryType`属性，显式指定收到的二进制数据类型。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>// 收到的是 blob 数据
+ws.binaryType = &quot;blob&quot;;
+ws.onmessage = function(e) {
+  console.log(e.data.size);
+};
+
+// 收到的是 ArrayBuffer 数据
+ws.binaryType = &quot;arraybuffer&quot;;
+ws.onmessage = function(e) {
+  console.log(e.data.byteLength);
+};
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>### 4.6 webSocket.send()
+
+实例对象的`send()`方法用于向服务器发送数据。
+
+发送文本的例子。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>ws.send(&apos;your message&apos;);
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>发送 Blob 对象的例子。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>var file = document
+  .querySelector(&apos;input[type=&quot;file&quot;]&apos;)
+  .files[0];
+ws.send(file);
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>发送 ArrayBuffer 对象的例子。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>// Sending canvas ImageData as ArrayBuffer
+var img = canvas_context.getImageData(0, 0, 400, 320);
+var binary = new Uint8Array(img.data.length);
+for (var i = 0; i &lt; img.data.length; i++) {
+  binary[i] = img.data[i];
+}
+ws.send(binary.buffer);
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>### 4.7 webSocket.bufferedAmount
+
+实例对象的`bufferedAmount`属性，表示还有多少字节的二进制数据没有发送出去。它可以用来判断发送是否结束。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>var data = new ArrayBuffer(10000000);
+socket.send(data);
+
+if (socket.bufferedAmount === 0) {
+  // 发送完毕
+} else {
+  // 发送还没结束
+}
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>### 4.8 webSocket.onerror
+
+实例对象的`onerror`属性，用于指定报错时的回调函数。
+
+&gt; &lt;pre&gt;`
+</code></pre><blockquote>
+<pre><code>socket.onerror = function(event) {
+  // handle error event
+};
+
+socket.addEventListener(&quot;error&quot;, function(event) {
+  // handle error event
+});
+`&lt;/pre&gt;
+</code></pre></blockquote>
+<pre><code>## 五、服务端的实现
+
+WebSocket 服务器的实现，可以查看维基百科的[列表](https://en.wikipedia.org/wiki/Comparison_of_WebSocket_implementations)。
+
+常用的 Node 实现有以下三种。
+</code></pre><ul>
+<li><a href="https://github.com/uWebSockets/uWebSockets" target="_blank" rel="external">µWebSockets</a></li>
+<li><a href="http://socket.io/" target="_blank" rel="external">Socket.IO</a></li>
+<li><p><a href="https://github.com/theturtle32/WebSocket-Node" target="_blank" rel="external">WebSocket-Node</a></p>
+<p>具体的用法请查看它们的文档，这里不详细介绍了。</p>
+<h2 id="六、WebSocketd"><a href="#六、WebSocketd" class="headerlink" title="六、WebSocketd"></a>六、WebSocketd</h2><p>下面，我要推荐一款非常特别的 WebSocket 服务器：<a href="http://websocketd.com" target="_blank" rel="external">Websocketd</a>。</p>
+<p>它的最大特点，就是后台脚本不限语言，标准输入（stdin）就是 WebSocket 的输入，标准输出（stdout）就是 WebSocket 的输出。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017051504.png" alt=""></p>
+<p>举例来说，下面是一个 Bash 脚本<code>counter.sh</code>。</p>
+<blockquote>
+<pre>`
+    #!/bin/bash
+
+    echo 1
+    sleep 1
+
+    echo 2
+    sleep 1
+
+    echo 3
+    `</pre>
+
+</blockquote>
+<p>命令行下运行这个脚本，会输出1、2、3，每个值之间间隔1秒。</p>
+<blockquote>
+<pre>`
+    $ bash ./counter.sh
+    1
+    2
+    3
+    `</pre>
+
+</blockquote>
+<p>现在，启动<code>websocketd</code>，指定这个脚本作为服务。</p>
+<blockquote>
+<pre>`
+    $ websocketd --port=8080 bash ./counter.sh
+    `</pre>
+
+</blockquote>
+<p>上面的命令会启动一个 WebSocket 服务器，端口是<code>8080</code>。每当客户端连接这个服务器，就会执行<code>counter.sh</code>脚本，并将它的输出推送给客户端。</p>
+<blockquote>
+<pre>`
+    var ws = new WebSocket('ws://localhost:8080/');
+
+    ws.onmessage = function(event) {
+      console.log(event.data);
+    };
+    `</pre>
+
+</blockquote>
+<p>上面是客户端的 JavaScript 代码，运行之后会在控制台依次输出1、2、3。</p>
+<p>有了它，就可以很方便地将命令行的输出，发给浏览器。</p>
+<blockquote>
+<pre>`
+    $ websocketd --port=8080 ls
+    `</pre>
+
+</blockquote>
+<p>上面的命令会执行<code>ls</code>命令，从而将当前目录的内容，发给浏览器。使用这种方式实时监控服务器，简直是轻而易举（<a href="https://github.com/joewalnes/web-vmstats" target="_blank" rel="external">代码</a>）。</p>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017051505.jpg" alt=""></p>
+<p>更多的用法可以参考<a href="https://github.com/joewalnes/websocketd/tree/master/examples/bash" target="_blank" rel="external">官方示例</a>。</p>
+<blockquote>
+<ul>
+<li>Bash 脚本<a href="https://github.com/joewalnes/websocketd/blob/master/examples/bash/greeter.sh" target="_blank" rel="external">读取客户端输入</a>的例子</li>
+<li>五行代码实现一个最简单的<a href="https://github.com/joewalnes/websocketd/blob/master/examples/bash/chat.sh" target="_blank" rel="external">聊天服务器</a></li>
+</ul>
+</blockquote>
+<p><img src="http://www.ruanyifeng.com/blogimg/asset/2017/bg2017051506.png" alt=""></p>
+<p>websocketd 的实质，就是命令行的 WebSocket 代理。只要命令行可以执行的程序，都可以通过它与浏览器进行 WebSocket 通信。下面是一个 Node 实现的回声服务<a href="https://github.com/joewalnes/websocketd/blob/master/examples/nodejs/greeter.js" target="_blank" rel="external"><code>greeter.js</code></a>。</p>
+<blockquote>
+<pre>`
+    process.stdin.setEncoding('utf8');
+
+    process.stdin.on('readable', function() {
+      var chunk = process.stdin.read();
+      if (chunk !== null) {
+        process.stdout.write('data: ' + chunk);
+      }
+    });
+    `</pre>
+
+</blockquote>
+<p>启动这个脚本的命令如下。</p>
+<blockquote>
+<p><pre>`</pre></p>
+<pre><code>$ websocketd --port=8080 node ./greeter.js
+</code></pre></blockquote>
+</li>
+</ul>
+<p>官方仓库还有其他<a href="https://github.com/joewalnes/websocketd/tree/master/examples" target="_blank" rel="external">各种语言</a>的例子。</p>
+<h2 id="七、参考链接"><a href="#七、参考链接" class="headerlink" title="七、参考链接"></a>七、参考链接</h2><ul>
+<li><a href="http://cjihrig.com/blog/how-to-use-websockets/" target="_blank" rel="external">How to Use WebSockets</a></li>
+<li><a href="https://www.tutorialspoint.com/websockets/websockets_send_receive_messages.htm" target="_blank" rel="external">WebSockets - Send &amp; Receive Messages</a></li>
+<li><a href="https://www.html5rocks.com/en/tutorials/websockets/basics/" target="_blank" rel="external">Introducing WebSockets: Bringing Sockets to the Web</a></li>
+</ul>
+<p>（完）</p>
+<pre><code>&lt;div style=&quot;color:#556677;line-height:160%;padding:0.3em 0.5em;border:1px solid #d3d3d3;margin:1em;background-color:#AAD2F0;-moz-border-radius: 10px;-webkit-border-radius:10px;border-radius: 10px;&quot;&gt;
+</code></pre><h3 id="文档信息"><a href="#文档信息" class="headerlink" title="文档信息"></a>文档信息</h3><ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank" rel="external">创意共享3.0许可证</a>）</li>
+<li>发表日期： <abbr class="published" title="2017-05-15T08:39:57+08:00">2017年5月15日</abbr></li>
+<li>更多内容： <a href="http://www.ruanyifeng.com/blog/archives.html" target="_blank" rel="external"> 档案</a>  »<a href="http://www.ruanyifeng.com/blog/developer/" target="_blank" rel="external"> 开发者手册</a></li>
+<li>博客文集：<a href="http://road.ruanyifeng.com" target="_blank" rel="external">《前方的路》</a>，<a href="https://ruanyf.github.io/survivor" target="_blank" rel="external">《未来世界的幸存者》</a></li>
+<li>社交媒体：<a href="https://twitter.com/ruanyf" target="_blank" rel="external"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAk1JREFUeNqsVc9rE0EU/mZ3dhPNJl2bVIk/Km09aFBE8GLvnrwJXvwLxIsgCP4Fnit6E8Gb0IMHwUsL9SSNgiAoooJIpE1Joo1h82uT7IxvxmRN3Q32kAdvdrI773vfe+/bDTu9WioDcDAda3Ja8piepQ1avCkCeny0Y+R9KenKwOmHHLvPaKn7AtVOoO8dOWDCMpg+41gMQv5FNEJACgoE8MsPNLDBhgfoutMOsJDmWLmU037C4TApciljwQ/kHoohQxV06+wMXNvE7WINuaSpvdYVKLgWnl3O4zAxU3Z1IYVGT+B5qYWV9z2kbQaT/cOwTsxOUUYF+mB5Dkmi8HG3h2q9hxsFNwRTdvQgxxnXRrMvIdkEhllis/qtiWuLDm4WZnBlPoWnXz28LHdw0uGR7m9Wu3j0qYGEubfn4UlBfXO4gTZltRNMg9w9f0i7kNFxllsBlS0x75gYfxyWTBUjT2W5CSMSPBrQuG21+hiMDS8CeCzF8eSLp13uQ3Ab1IqMFZN8tFHPmgOBF99bYP8Be1Xp6t7OJszJgKpPSiZvaj7uf2hguz2IBQuozDvFH6RDBjuK9wdQDvt0nMpW+8efGyh5UcAeZb2+UcHbnz5Jx4wdlp4yJYU3kLiQtfBwOYeLc8nIwfXtNu69q2Oz4mMxbemYOOOjKarhvq51KUjg3GwiFPIuvcNF6pnSnWK0lOEabNLgQh1aJFAhlGB9rG110B2+oyRNPc0sZbRNFltmLKDKqj4Qrm1ojzOxDz2pyPQ0P7CK4c40/wJ+CzAAGYrXsvfFXR4AAAAASUVORK5CYII=" alt=""> twitter</a>，<a href="http://weibo.com/ruanyf" target="_blank" rel="external"><img src="data:image/png;base64,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" alt=""> weibo</a></li>
+<li>Feed订阅： <a href="/feed.html"><img src="data:image/gif;base64,R0lGODlhFAAUANU2APV1GfmrePZ8IeR5VPq2ieNkLf7p3NpFJveCJ/NoFfibVPR1IexiJfvdzuZrNfXGuOhUEueTevaFOfzIpNxDGeZZJNU6IOubifiVTfOnid1aLuZpLOFSJf/28vJtIvGcefaLSd5kNu9iFv/z6//48//t4uFfLfNkCeJNGuGNc/rCof/+/PVxEeldI/V5KeKMbu9nIvB2OvzQtNxMKfOPXP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAADYALAAAAAAUABQAAAb/QJstEjKZCsjCZsl0pIS2QWXaYsA8noVWIEAgFoNhhWNyMESi7Jbr/aZCFdRnZJAFJCwAt+vlOkwtEBk1hDUkExJ6bQJaGyYMLTQTDSOFHQF8jAseSFYiJwkuAQ2FE1xaHjBIMDAgARguJwABJIQTLJswDEgeIgSEJQQILAqVNQEiui1HHgkBhTUGCiwYtR0xLS0VJhtaEgoEBoQkGCfPNSoQY9xaCwAsCBPALgmkJA4cZN0CAAgY/PJqEIDwgVAECjM0bOAnwcAKGQJclKhRgoGDDjUeUDigkN8vQiBOfByAglSDAxw3IBCgYEU0FyJoEPpA4UGNDjMsaHDQR8EdPVYOMmQYQGHAhQgHLIRIsWAlgASsGMRBMWMGBQtYZ7yIsoBRKkhjOMxAiXJGGCEpHGxIYsSIhrcaQmy1EQQAOw==" alt=""></a>        <pre><code>&lt;div style=&quot;color:#556677;line-height:160%;padding:0.3em 0.5em;margin:1em;-moz-border-radius: 10px;-webkit-border-radius:10px;border-radius: 10px;&quot;&gt;&lt;/div&gt;
+</code></pre></li>
+</ul>
+</div><div class="tags"><a href="/tags/Developer/">Developer</a></div><div class="post-nav"><a href="/2017/08/02/TCP-协议简介/" class="pre">TCP 协议简介</a><a href="/2017/07/27/HTML-自定义元素教程/" class="next">HTML 自定义元素教程</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="https://matchless5233.github.io"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Opinions/" style="font-size: 15px;">Opinions</a> <a href="/tags/Developer/" style="font-size: 15px;">Developer</a> <a href="/tags/Computer/" style="font-size: 15px;">Computer</a> <a href="/tags/mvc/" style="font-size: 15px;">mvc</a> <a href="/tags/mvp/" style="font-size: 15px;">mvp</a> <a href="/tags/mvvm/" style="font-size: 15px;">mvvm</a> <a href="/tags/Algorithm/" style="font-size: 15px;">Algorithm</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/08/09/图解：MVC，MVP-和-MVVM/">图解：MVC，MVP 和 MVVM</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/穷忙的人生/">穷忙的人生</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/技术决定历史/">技术决定历史</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/如何验证-Email-地址：SMTP-协议入门教程/">如何验证 Email 地址：SMTP 协议入门教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/45岁以后的人生/">45岁以后的人生</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/07/IaaS，PaaS，SaaS-的区别/">IaaS，PaaS，SaaS 的区别</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/06/树莓派新手入门教程/">树莓派新手入门教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/05/正态分布为什么常见？/">正态分布为什么常见？</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/03/窗口管理器-xmonad-教程/">窗口管理器 xmonad 教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/02/TCP-协议简介/">TCP 协议简介</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://www.haomwei.com/" title="屠城" target="_blank">屠城</a><ul></ul><a href="http://www.ruanyifeng.com/home.html" title="阮一峰" target="_blank">阮一峰</a><ul></ul><a href="https://juejin.im/" title="掘金" target="_blank">掘金</a><ul></ul><a href="https://cnodejs.org/" title="Node.js专业中文社区" target="_blank">Node.js专业中文社区</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2017 <a href="/." rel="nofollow">Matchless.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
